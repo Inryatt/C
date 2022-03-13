@@ -1,0 +1,20 @@
+//Figure Bank
+
+oculos(
+	lenteEsq: circle (radius=3, fill_color= Blue) at (5,0),
+	lenteDir: circle (radius=4, fill_color= Orange) at (15,0),
+	ponte: line (points= [(8,0),(11,0)], thickness= 20) at (0,0)
+)
+
+nariz(	
+	shaft: rectangle (height=1, width = 3) at (0,0),
+	o: oculos at (3,0)
+)
+
+
+
+
+extra(
+	id: int 2,
+	ret: rectangle (points = [(0,0), (1,0), (1,1), (0,1)]) at (0,0)
+)

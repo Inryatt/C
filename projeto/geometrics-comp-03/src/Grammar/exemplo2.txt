@@ -1,0 +1,44 @@
+Geometrics Test2;
+//load from "exemploFig.f3";
+
+figure oculos {
+	circle lenteEsq {radius: 3; fill_color: Blue;} at (5,0);
+	circle lenteDir {radius: 4; fill_color: Orange;} at (15,0);
+	line ponte {points: [(8,0) (11,0)]; thickness: 20;} at (0,0);
+}
+
+figure cara {
+	oculos o1 at (1,1);
+	circle c1 {radius: 20; fill_color: Pink;} at (0,0);
+	point p = (5,0);
+}
+
+figure super_cara {
+	cara c at (0,0);
+	point p = (0,0);
+}
+
+
+create oculos o1 at (5,0); 
+create cara c at (0,0);
+create super_cara c1 at(0,0);
+
+o1.lenteEsq.radius = 5;
+//o1.lenteEsq.width = 6; // ERROR: Circle does not accept width
+
+c.o1.lenteEsq.radius = 5;
+//c.o1.lenteEsq.width = 6; // ERROR: Circle does not accept width
+c.p = (5,1);
+c.o1.fill_color = Red;
+
+c1.c.p = (1,1);
+c1.p = (1,1);
+c1.c.o1.lenteDir.radius = 5;
+
+move c1.p by (1,0);
+move c1.c.p by (0,1);
+
+
+
+
+

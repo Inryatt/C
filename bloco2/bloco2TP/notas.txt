@@ -1,0 +1,21 @@
+para "compilar" o ficheiro g4:
+    antlr4 nomedficheiro.g4
+    antlr4-javac nomedoficheiro*.java
+    echo "coisa a introduzir" | antlr4-test nomedoficheiro r -tokens
+
+para fazer visitor:
+    antlr4-visitor Execute String
+    antlr4-main -v Execute
+
+    antlr4-main -v Execute -i -f
+
+para "compilar" visitor:
+    antlr4 -visitor nomedficheiro.g4
+    javac *.java
+ou
+    antlr4-build
+    
+para correr:
+    antlr4-java nomedoficheiro
+    ou
+    antlr4-run

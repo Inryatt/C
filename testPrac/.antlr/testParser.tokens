@@ -1,0 +1,13 @@
+T__0=1
+T__1=2
+T__2=3
+T__3=4
+ID=5
+INT=6
+COMMENT=7
+WS=8
+ERROR=9
+';'=1
+'display'=2
+'assign'=3
+'/'=4

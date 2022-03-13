@@ -1,0 +1,331 @@
+//import org.stringtemplate.v4.*;
+
+// ------------DICTIONARIES FOR SIMPLE TRANSLATIONS------------
+
+//these are not the books you're looking for
+
+
+// ----------------------TEMPLATES----------------------
+
+// TODO: substituir por returnSelf
+pointType() ::="point"
+testePoint(content) ::="<content>"
+
+
+returnSelf(self) ::= "<self>"
+
+// STATMODULE: 
+// Estrutura obrigatória do ficheiro .py a ser impresso (Header)
+statModule(name,stat) ::= << 
+from imports.library import *
+from pygame import mixer
+
+import numpy as np
+import cv2 as cv
+import copy
+
+TITLE = "<name>"
+UNIT = 50
+HEIGHT = 20
+WIDTH = 20
+FRAMERATE = 24
+RET = -1
+TODRAW = {}
+KEYS = {}
+STAMPS = {}
+mixer.init()
+mixer.music.load("./bin/imports/pew.ogg")
+img = np.zeros((UNIT*WIDTH,UNIT*HEIGHT,3),np.uint8)
+
+<stats(stat)>
+>>
+
+// STATS: 
+// sempre que é adicionado um statement, separa em linhas
+stats(stat) ::= <<
+<if(stat)><stat ;separator="\n"><endif>
+>>
+
+
+//--------------------SIMPLE OPERATIONS-------------
+// RENDER: visitRender()
+render(numFrames) ::= <<
+RET = render(img, TODRAW, TITLE, <numFrames>*(int(1000/FRAMERATE)))
+img = np.zeros((UNIT*WIDTH,UNIT*HEIGHT,3),np.uint8)
+>>
+
+set_frame_rate(framerate) ::= <<
+FRAMERATE=<framerate>
+>>
+
+canvas_size(height,width) ::= <<
+<if(height)>
+HEIGHT=<height>
+<endif>
+<if(width)>
+WIDTH=<width>
+<endif>
+img = np.zeros((UNIT*WIDTH,UNIT*HEIGHT,3),np.uint8)
+>>
+
+primitiveProperties(property,value) ::= <<
+this.<property>=<value>
+>>
+
+//-------------------FIGURE MANIPULATION--------------------
+// CHANGE_POSITION: visitInstantiate_figure
+changePos(point) ::= "obj.moveTo(<point>)" //TODO CHANGE THIS TO ADAPT FOR COLLISIONS
+
+// PROPERTY_ASSIGNMENT : visitProperty_assignment
+propAssign(label,prop,val) ::= "STAMPS[\"<label>\"].<prop>=<val>"
+
+// PROPERTY_ASSIGNMENT_SUBFIGURE: visitProperty_assignment
+propAssignSub(prop,val) ::= "obj.<prop>=<val>"
+
+// DESTROY_INSTANCE: visitDestroy_instance
+instDestroy(inst) ::= "TODRAW.pop(\"<inst>\")"
+
+// INSTANTIATE FIGURE IN FIGURE: visitFigureInstanciateFigure
+instFigInFig(fig,obj,label) ::= "STAMPS[\"fig\"].add(<obj>,\"<label>\")"
+
+recolorFill(color,figure) ::= "<figure>.recolorFill(<color>)"
+
+recolorBorder(color,figure) ::= "<figure>.recolorBorder(<color>)"
+
+rethicc(thiccness,figure) ::= "<figure>.rethicc(<thiccness>)"
+
+moveBy(figure,vector) ::= "<figure>.moveBy(<vector>)"
+
+moveTo(figure,point) ::= "<figure>.moveTo(<point>)"
+
+rotateBy(figure,angle) ::= "<figure>.rotate(<angle>)"
+
+rotateTo(figure,angle) ::= "<figure>.rotateTo(<angle>)"
+
+rotateByAround(figure,angle,around) ::= "<figure>.rotate(<around>,<angle>)"
+
+rotateToAround(figure,angle,around) ::= "<figure>.rotateTo(<angle>,<around>)"
+
+scaleBy(figure,ratio) ::= "<figure>.scaleBy(<ratio>)"
+
+scaleTo(figure,ratio) ::= "<figure>.scaleTo(<ratio>)"
+
+hide(figure) ::= "<figure>.hide()"
+
+show(figure) ::= "<figure>.show()"
+
+changeProperty(figure,propertyName,newValue) ::= "<figure>.<propertyName> = <newValue>"
+
+// GROUP: visitGroupEntities
+aggregation(vals) ::= <<[<vals>]>> 
+
+// GROUP VALS: visitGroupEntities
+aggregationVals(value) ::= <<
+<if(value)><value ;separator=","><endif>
+>>
+
+// CREATE GROUP:
+create_group(label,values) ::= "<label>=<values>"
+
+//-------------------PRIMITIVE FIGURES---------------------------
+// PRIMITIVE_FIGURE_DECLARATION: visitPrimitive_figure_declaration()
+primFigDecl(type,id,properties) ::= <<
+STAMPS["<id>"] = copy.deepcopy(<type>())
+<properties>
+>>
+
+primFigDeclFig(type,id,properties) ::= <<
+STAMPS["<id>"] = copy.deepcopy(<type>())
+<properties>
+>>
+
+// PRIMITIVE_FIGURE_BLOCK: visitPrimitive_figure_block
+primFigBlock(prop) ::= <<
+<if (prop)><prop ;separator="\n"><endif>
+>>
+
+
+// ADD_TO_DRAW: visitInstantiate_figure
+add_to_draw(label,object,position) ::= <<
+obj = copy.deepcopy(STAMPS["<object>"])
+<if (position)><position><endif>
+TODRAW["<label>"] = obj
+>>
+
+// ADD_TO_FIG: visitFigureInstanciateFigure
+add_to_fig(fig,label,object,position) ::= <<
+obj = copy.deepcopy(STAMPS["<object>"])
+<if (position)><position><endif>
+STAMPS["<fig>"].add(obj,"<label>")
+>>
+
+RGB(R,G,B) ::= "(<R>,<G>,<B>)"
+
+normal_primitive_declaration(name,value) ::= "" //Python n tem?
+
+normal_primitive_assignment(name,value) ::=  "<name>=<value>"
+
+//used when you need A point but not assign it to a name
+point_declaration(x,y)::= "point(<x>,<y>)"
+
+// point assignment
+point(varname,x,y) ::= "<varname> = point(<x>,<y>)"
+
+pointInst(x,y) ::= "point(<x>,<y>)"
+
+circle(center,radius,color,thickness) ::= <<
+TODRAW.append(circle(<center>,<radius>,<color>,<thickness>))
+>>
+line(pointA,pointB,color,thickness) ::= <<
+TODRAW.append(line(<pointA>,<pointB>,<color>,<thickness>))
+>>
+// rectangle
+rectangle() ::= <<>>
+// square
+ellipse(canvas,center,axisLen,angleRotation,startAngle,endAngle,color,thickness) ::= "cv.ellipse(<canvas>,<center>,<axisLen>,<angleRotation>,<startAngle>,<endAngle>,<color>,<thickness>)"
+// polyline/gon
+polygon() ::= ""
+
+// FIGURE_DELCARATION: visitFigure_declaration
+figDelc(label, figStats) ::= <<
+STAMPS["<label>"] = copy.deepcopy(figure())
+<figStats>
+>>
+
+// PRIMITIVA_DA_FIGURA: visitFigureDeclarePrimitiveFigure
+figDeclPrim(type,label,props,fig,position) ::= <<
+obj = copy.deepcopy(<type>())
+<props>
+<if (position)><position><endif>
+STAMPS["<fig>"].add(obj,"<label>")
+>>
+
+//-----------------CONDITIONAL LOGIC AND USER CONTROL----------------
+
+cond_statement(stat,var,stat_true,stat_false) ::= <<
+<stats(stat)>
+if <var>:
+    <stat_true>
+<if (stat_false)>
+else:
+    <stat_false>
+<endif>
+>>
+
+if_condStat(condition,stat) ::=<<
+if <condition> :
+<condition_block(stat)>
+>>
+
+elseIf_condStat(condition,stat) ::=<<
+elif <condition> :
+<condition_block(stat)>
+>>
+
+else_condStat(condition,stat) ::=<<
+else:
+<condition_block(stat)>
+>>
+
+cond_block(stat) ::=<<
+<if(stat)><stat ;separator="\n"><endif>
+>>
+
+key_pressed(key) ::=" RET==ord('<key>') "
+
+timesLoop_stat(times,stat) ::= <<
+for i in range(0,<times>):
+<condition_block( stat )>
+>>
+
+forInLoop_stat(element,container,stat) ::= <<
+for <element> in <container>:
+    try:
+    <condition_block( stat )>
+    except KeyError: 
+        # estudasse
+        pass
+>>
+
+whileLoop_stat(condition,stat) ::= <<
+while <condition> :
+<condition_block( stat )>
+>>
+
+//DO NOT DELETE THE BELOW TAB!!!!1!11 (pls)
+condition_block(stat) ::=<<
+    <if(stat)><stat ;separator="\n"><endif>
+>>
+
+doWhile(instruc,condition) ::= <<
+while True:
+<condition_block( instruc )>
+    if <condition>:
+        break;
+
+>>
+
+break() ::="break"
+
+wait_for_key(key) ::= <<
+while cv.waitKey()!=ord("<key>"):
+    pass
+>>
+
+is_colliding(collider,collidee) ::=<<
+(TODRAW["<collidee>"].checkCollision(TODRAW["<collider>"].getHitboxPoints()) or TODRAW["<collider>"].checkCollision(TODRAW["<collidee>"].getHitboxPoints()))
+>>
+
+//-------------------ARITHMETIC OPERATIONS---------------------
+
+sumPoint(pointA,pointB) ::= "sumPoint(<pointA>,<pointB>)"
+diffPoint(pointA,pointB) ::= "diffPoint(<pointA>,<pointB>)"
+sumPointNum(point,num) ::= "sumPointNum(<point>,<num>)"
+diffPointNum(point,num) ::= "diffPointNum(<point>,<num>)"
+mulPointNum(point,num) ::= "mulPointNum(<point>,<num>)"
+divPointNum(point,num) ::= "divPointNum(<point>,<num>)"
+remPointNum(point,num) ::= "remPointNum(<point>,<num>)"
+
+normalSum(num1,num2) ::= "<num1> + <num2>"
+normalDiff(num1,num2) ::= "<num1> - <num2>"
+normalMul(num1,num2) ::= "<num1> * <num2>"
+normalDiv(num1,num2) ::= "<num1> / <num2>"
+normalRem(num1,num2) ::= "<num1> % <num2>"
+normalPow(num1,num2) ::= "<num1> ** <num2>"
+
+//-------------------ANIMATION STUFF---------------------
+
+animation(funcName,args,instruc) ::= <<
+def <funcName>(<args>):
+    <instruc>
+
+>>
+
+animate(funcName,args) ::= <<
+<funcName>(<if(args)><args><endif>)
+>>
+
+//----------------------MISCELLANEOUS-------------------
+
+figureLabel(label) ::= <<
+TODRAW["<label>"]
+>>
+
+figureLabelChain(motherlabel,childlabel) ::= <<
+<motherlabel>.contents["<childlabel>"]
+>>
+
+primitiveDecl(label) ::= "<label> = None"
+
+primitiveAssign(label,value) ::= "<label> = <value>" 
+
+figure_declaration() ::= ""
+figure_operation() ::= ""
+input() ::= ""
+create_instance(varname,figure) ::= <<
+
+>>
+destroy_instance()::=""
+
+pew()::=<<mixer.music.play()>>
+

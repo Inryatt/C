@@ -1,0 +1,106 @@
+Geometrics Exemplo;
+
+double i = 4 * 3;
+
+for 5 times {
+	double a = 4;
+}
+
+//break; //invalid statement
+
+double a = 3;
+
+/*
+while( a > 4){
+	int i = 0;
+	i = 4;
+	for i times {
+		i = 9;
+		double b = 0;
+		break;
+	}
+	//b = 7; //this statement is not valid
+	break;
+} */  // this while is invalid, variable i has already been declared
+
+if(i){
+	//break;//invalid statement
+}
+
+
+circle c1 {
+	radius:30;
+	fill_color: RGB #ffff00;
+}
+
+create c1 c at (0,0);
+//create c1 c at (1,0); // this statement is invalid
+
+//create clock c at (0,0);// this statement is invalid
+
+//create c1 i at (0,0);// this statement is invalid
+
+for 7 times{
+	//create c1 t;	// this statement is invalid, cannot create a figure in a loop (maybe it should be possible... e.g. use a loop to create many projectiles)
+}
+
+
+point p1 = (2, 3);
+
+move c by (3, 4);
+scale c to 3;
+rotate c by 22;
+rotate c to 10 around p1;
+
+boolean hasBorder = c.border;
+double numb = c.thickness * 2;
+i = numb + 1;
+
+c.border = False;
+c.center = (-1,1.2);
+c.radius = 6;
+
+
+// invalid statements
+//c1.radius = 4;			// can't alter figure definitions, only instances
+//i.thickness = 3;			// i is an integer type
+//i = hasBorder;			// i is an integer type
+
+//c.border;					// should this be invalid? this is a grammar thing
+//c.funny = 2;				// funny is not defined
+//rotate c by 13.6;			// angles must be ints
+c.length = 3;				// circles don't have length
+
+
+
+// back to valid statements
+figure face {
+	int age = 23;
+	c1 leftEye at (-1, 1);
+	c1 rightEye at (1, 1);
+	circle head {
+		radius: 5;
+	}
+}
+
+point facePos = (20, 30);
+create face john at facePos;
+
+john.leftEye.fill_color = blue;
+john.rightEye.thickness = 5;
+john.age = john.age + 1;
+
+// invalid statements
+//john.funny = -5;	// not defined
+//face.age = 3;		// cannot change definition
+//create face face;	// can't use same name as definition
+
+figure figteste {
+	int pei = 2;
+	double amogus = 5.0;
+}
+
+create figteste ex;
+
+ex.pei = 5;
+ex.amogus = 9;

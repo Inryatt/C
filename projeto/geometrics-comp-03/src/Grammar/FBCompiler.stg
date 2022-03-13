@@ -1,0 +1,85 @@
+
+
+// STATMODULE:
+// Estrutura obrigatória do ficheiro .py a ser retornado (Header)
+statModule(stat) ::= << 
+#=======================Imported Figures from the Bank==============================
+<stats(stat)>
+#=================================End Import========================================
+>>
+
+// STATS:
+// sempre que é adicionado um statement, separa em linhas
+stats(stat) ::= <<
+<if(stat)><stat ;separator="\n"><endif>
+>>
+
+figureDecl(figure,stats) ::= <<
+STAMPS["<figure>"] = copy.deepcopy(figure())
+<stats>
+>>
+
+figDeclPrim(type,label,props,fig,position) ::= <<
+obj = copy.deepcopy(<type>())
+<props>
+<if (position)><position><endif>
+STAMPS["<fig>"].add(obj,"<label>")
+
+>>
+
+figDeclPrim2(type,label,props,fig,position) ::= <<
+obj = copy.deepcopy(STAMPS["<type>"])
+<if (position)><position><endif>
+STAMPS["<fig>"].add(obj,"<label>")
+
+>>
+
+figureAttr(attrName, attr) ::= <<
+<attrName>: <attr>,
+
+>>
+
+point_declaration(x,y)::= "point(<x>,<y>)"
+attribute_assignment(name,value) ::=  "<name>=<value>"
+
+//not sure if this is correct someone please check :3
+//roubei do GeoCompiler 
+figureInFigure(fig,label,object,position) ::=<<
+obj = copy.deepcopy(STAMPS["<object>"])
+<if (position)><position><endif>
+STAMPS["<fig>"].add(obj,"<label>")
+
+>>
+
+// PRIMITIVE_FIGURE_DECLARATION: visitPrimitive_figure_declaration()
+primFigDecl(type,id,properties) ::= <<
+STAMPS["<id>"] = copy.deepcopy(<type>())
+<properties>
+
+>>
+
+// PRIMITIVE_FIGURE_BLOCK: visitPrimitive_figure_block
+primFigProps(prop) ::= <<
+<if (prop)><prop ;separator="\n"><endif>
+>>
+
+propAssign(label,prop,val) ::= "STAMPS[\"<label>\"].<prop>=<val>"
+
+propAssignSub(prop,val) ::= "obj.<prop>=<val>"
+
+changePos(point) ::= "obj.moveTo(<point>)" 
+
+//Says RGB but is used for ALL the color types
+RGB(R,G,B) ::= "(<R>,<G>,<B>)"
+
+// GROUP: visitGroupEntities
+aggregation(vals) ::= "[<vals>]" 
+
+// GROUP VALS: visitGroupEntities
+aggregationVals(value) ::= <<
+<if(value)><value ;separator=","><endif>
+>>
+
+getValue(value)::="<value>"
+
+returnSelf(self) ::= "<self>"

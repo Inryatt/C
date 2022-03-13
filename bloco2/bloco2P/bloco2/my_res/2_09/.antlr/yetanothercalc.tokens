@@ -1,0 +1,12 @@
+T__0=1
+T__1=2
+Integer=3
+Frac=4
+Term=5
+NEWLINE=6
+WS=7
+COMMENT=8
+ID=9
+'->'=1
+'print'=2
+';'=5

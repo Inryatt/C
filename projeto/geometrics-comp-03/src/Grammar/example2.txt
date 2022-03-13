@@ -1,0 +1,74 @@
+Geometrics SpaceInvaders;
+
+Canvas Size 18 12;
+
+figure spaceship {
+    rectangle base {
+        width: 1;
+        height: 1;
+        fill_color: Red;
+    }
+    polygon left_wing {
+        points: [(1,0) (1,-0.5) (0,0)];
+        fill_color: Blue;
+    }
+    polygon right_wing {
+        points: [(1,1) (1,1.5) (0,1)];
+        fill_color: Blue;
+    }
+    polygon front {
+        points: [(0,0) (-1,0.5) (0,1)];
+        fill_color: Yellow;
+    }
+}
+
+line bullet {
+    points: [(0,0) (-1,0)];
+    hidden: True;
+}
+
+circle teste {
+    radius: 5;
+    fill_color: Green;
+}
+
+double x = 5;
+double y = 10;
+double bY = 10;
+double accel = 1;
+create spaceship ship at (y,x);
+
+create bullet b at (y-5,x);
+
+while (True) {
+    if (key pressed key.a) {
+        x = x - 0.5;
+    }
+
+    if (key pressed key.d) {
+        x = x + 0.5;
+    }
+
+    if (x < 0) {
+        x = 0;
+    }
+
+    if (x > 17) {
+        x = 17;
+    }
+
+    if (key pressed key.k) {
+        move b to (y,x+0.5);
+        show b;
+    }
+
+    if (bY < 0) {
+        hide b;
+    }
+    
+
+
+    move ship to (y,x);
+
+    render;
+}
